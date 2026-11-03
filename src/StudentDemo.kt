@@ -1,54 +1,84 @@
 fun main() {
 
-    val students = mutableListOf<Student>()
+    val university = University()
 
     while (true) {
+        println()
+        println("1. Add student")
+        println("2. Search student by ID")
+        println("3. Search students by name")
+        println("4. Quit")
+        print("Choose an option: ")
 
-        print("Enter student ID: ")
-        val id = readln()
+        when (readln()) {
+            "1" -> {
+                print("Enter student ID: ")
+                val id = readln()
 
-        print("Enter student name (or type 'quit' to stop): ")
-        val name = readln()
+                print("Enter student name: ")
+                val name = readln()
 
-        if (name.equals("quit", ignoreCase = true)) {
-            break
-        }
+                print("Enter course: ")
+                val course = readln()
 
-        print("Enter course: ")
-        val course = readln()
+                print("Enter mark (0-100): ")
+                val mark = readln().toDoubleOrNull()
 
-        print("Enter mark (0-100): ")
-        val markInput = readln().toDoubleOrNull()
+                if (mark == null || mark !in 0.0..100.0) {
+                    println("Invalid mark.")
+                    continue
+                }
 
-        if (markInput == null || markInput !in 0.0..100.0) {
-            println("Invalid mark. Please try again.")
-            continue
-        }
+                print("Student type (u = Undergraduate, m = Masters): ")
+                val type = readln().lowercase()
 
-        print("Enter student type (u = Undergraduate, m = Masters): ")
-        val type = readln().lowercase()
+                val student: Student = when (type) {
+                    "u" -> Undergraduate(id, name, course, mark)
+                    "m" -> Masters(id, name, course, mark)
+                    else -> {
+                        println("Invalid student type.")
+                        continue
+                    }
+                }
 
-        val student: Student = when (type) {
-            "u" -> Undergraduate(id, name, course, markInput)
-            "m" -> Masters(id, name, course, markInput)
-            else -> {
-                println("Invalid student type. Defaulting to Undergraduate.")
-                Undergraduate(id, name, course, markInput)
+                university.enrolStudent(student)
+                println("Student added successfully!")
             }
+
+            "2" -> {
+                print("Enter student ID: ")
+                val id = readln()
+
+                val student = university.findStudentById(id)
+
+                if (student != null) {
+                    println(student)
+                } else {
+                    println("Student not found.")
+                }
+            }
+
+            "3" -> {
+                print("Enter student name: ")
+                val name = readln()
+
+                val students = university.findStudentsByName(name)
+
+                if (students.isEmpty()) {
+                    println("No students found.")
+                } else {
+                    for (student in students) {
+                        println(student)
+                    }
+                }
+            }
+
+            "4" -> {
+                println("Program finished.")
+                break
+            }
+
+            else -> println("Invalid option. Try again.")
         }
-
-        students.add(student)
-
-        println("Student added successfully!")
     }
-
-    println()
-    println("All Students")
-    println("------------")
-
-    for (student in students) {
-        println(student)
-    }
-
-    println("Program finished.")
 }
