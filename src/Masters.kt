@@ -14,5 +14,9 @@ class Masters(
             else -> "Fail"
         }
     }
+    // Display Masters student details
+    override fun toString(): String {
+        return "Masters: ID=$id, Name=$name, Course=$course, Mark=$mark, Grade=${getGrade()}"
+    }
 }
 
