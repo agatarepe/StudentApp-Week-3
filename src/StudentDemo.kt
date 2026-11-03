@@ -1,5 +1,6 @@
-
 fun main() {
+
+    val students = mutableListOf<Student>()
 
     while (true) {
 
@@ -9,8 +10,7 @@ fun main() {
         print("Enter student name (or type 'quit' to stop): ")
         val name = readln()
 
-        // Stop the program if the user enters quit
-        if (name.lowercase() == "quit") {
+        if (name.equals("quit", ignoreCase = true)) {
             break
         }
 
@@ -18,12 +18,16 @@ fun main() {
         val course = readln()
 
         print("Enter mark (0-100): ")
-        val markInput = readln().toDouble()
+        val markInput = readln().toDoubleOrNull()
+
+        if (markInput == null || markInput !in 0.0..100.0) {
+            println("Invalid mark. Please try again.")
+            continue
+        }
 
         print("Enter student type (u = Undergraduate, m = Masters): ")
         val type = readln().lowercase()
 
-        // Create the correct type of student
         val student: Student = when (type) {
             "u" -> Undergraduate(id, name, course, markInput)
             "m" -> Masters(id, name, course, markInput)
@@ -33,13 +37,17 @@ fun main() {
             }
         }
 
-        println()
-        println("Student Record")
-        println("--------------")
+        students.add(student)
+
+        println("Student added successfully!")
+    }
+
+    println()
+    println("All Students")
+    println("------------")
+
+    for (student in students) {
         println(student)
-        println("Grade: ${student.getGrade()}")
-        println("Passed: ${student.didPass()}")
-        println()
     }
 
     println("Program finished.")
